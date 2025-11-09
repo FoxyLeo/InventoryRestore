@@ -1,0 +1,7 @@
+# === InventoryRestore Configuration ===
+
+# LANG selects which message file from the messages/ folder will be loaded (e.g. "en" or "es").
+lang: en
+
+# time_erase defines after how many days stored inventories are deleted automatically (use a whole number, 0 disables it).
+time_erase: 60 # days

@@ -1,0 +1,126 @@
+prefix: "&7[&bInventoryReset&7]"
+messages:
+  command:
+    no-permission: "&cNo tienes permiso para usar este comando."
+    usage: "&7Usa &b/invrestore help &7para más información."
+    unknown-subcommand: "&cSubcomando desconocido. Usa &b/invrestore help&c."
+    help:
+      - "&bComandos de InventoryRestore:"
+      - "&7/invrestore restore <jugador> &f- Abre el menú de restauración de un jugador."
+      - "&7/invrestore view <jugador> &f- Ver el inventario de un jugador en tiempo real."
+      - "&7/invrestore reload &f- Recarga los archivos de configuración del plugin."
+    reload:
+      success: "&aTodos los archivos de configuración se han recargado."
+    restore:
+      usage: "&7Uso: &b/invrestore restore <jugador>"
+      only-players: "&cSolo los jugadores pueden usar la versión con menú de este comando."
+      no-record-any: "&cNo se encontraron inventarios guardados para &e%player%&c."
+      notify-player: "&aTu inventario guardado ha sido restaurado por &e%sender%&a."
+    view:
+      usage: "&7Uso: &b/invrestore view <jugador>"
+      only-players: "&cSolo los jugadores pueden ver inventarios."
+      not-found: "&cNo se encontraron datos de inventario para &e%player%&c."
+      invalid: "&cLos datos guardados de &e%player% &cestán dañados y no se pueden abrir."
+  inventory:
+    view:
+      title: "&8Ver Inventario &7- &f%player%"
+      target-offline: "&cEl jugador &e%player% &cse desconectó. Cerrando la vista."
+    restore:
+      main:
+        title: "&8Restaurar Inventario &7- &f%player%"
+        unavailable: "&cEsta categoría aún no está disponible."
+        items:
+          death:
+            name: "&bMuertes"
+            lore:
+              - "&7Ver inventarios guardados por muerte."
+          world:
+            name: "&aCambios de Mundo"
+            lore:
+              - "&7Ver inventarios guardados al cambiar de mundo."
+          teleport:
+            name: "&dTeletransportes"
+            lore:
+              - "&7Ver inventarios guardados al teletransportarse."
+          connection:
+            name: "&aConexiones"
+            lore:
+              - "&7Ver inventarios guardados al entrar al servidor."
+          disconnection:
+            name: "&cDesconexiones"
+            lore:
+              - "&7Ver inventarios guardados al salir del servidor."
+      list:
+        death:
+          title: "&8Muertes &7- &f%player%"
+          empty: "&cNo se encontraron inventarios de muerte para &e%player%&c."
+        world:
+          title: "&8Cambios de Mundo &7- &f%player%"
+          empty: "&cNo se encontraron inventarios de cambios de mundo para &e%player%&c."
+        teleport:
+          title: "&8Teletransportes &7- &f%player%"
+          empty: "&cNo se encontraron inventarios de teletransporte para &e%player%&c."
+        connection:
+          title: "&8Conexiones &7- &f%player%"
+          empty: "&cNo se encontraron inventarios de conexión para &e%player%&c."
+        disconnection:
+          title: "&8Desconexiones &7- &f%player%"
+          empty: "&cNo se encontraron inventarios de desconexión para &e%player%&c."
+        navigation:
+          previous:
+            name: "&aPágina Anterior"
+            lore:
+              - "&7Volver a la página previa."
+          next:
+            name: "&aPágina Siguiente"
+            lore:
+              - "&7Ir a la siguiente página."
+      detail:
+        death:
+          title: "&8Muerte &7- &f%timestamp%"
+          missing: "&cEse registro ya no está disponible."
+          invalid: "&cLos datos guardados de &e%player% &cestán dañados y no se pueden abrir."
+          already-returned: "&cEse inventario ya fue devuelto."
+          offline: "&cEl jugador &e%player% &cdebe estar en línea para restaurar este inventario."
+          restored: "&aEl inventario de &e%player% &cse restauró correctamente."
+          erased: "&aEl registro de muerte de &e%player% &cse eliminó."
+        world:
+          title: "&8Cambio de Mundo &7- &f%timestamp%"
+          missing: "&cEse registro de cambio de mundo ya no está disponible."
+          invalid: "&cLos datos guardados de &e%player% &cestán dañados y no se pueden abrir."
+          already-returned: "&cEse inventario ya fue devuelto."
+          offline: "&cEl jugador &e%player% &cdebe estar en línea para restaurar este inventario."
+          restored: "&aEl inventario del cambio de mundo de &e%player% &cse restauró correctamente."
+          erased: "&aEl registro de cambio de mundo de &e%player% &cse eliminó."
+        teleport:
+          title: "&8Teletransporte &7- &f%timestamp%"
+          missing: "&cEse registro de teletransporte ya no está disponible."
+          invalid: "&cLos datos guardados de &e%player% &cestán dañados y no se pueden abrir."
+          already-returned: "&cEse inventario ya fue devuelto."
+          offline: "&cEl jugador &e%player% &cdebe estar en línea para restaurar este inventario."
+          restored: "&aEl inventario del teletransporte de &e%player% &cse restauró correctamente."
+          erased: "&aEl registro de teletransporte de &e%player% &cse eliminó."
+        connection:
+          title: "&8Conexión &7- &f%timestamp%"
+          missing: "&cEse registro de conexión ya no está disponible."
+          invalid: "&cLos datos guardados de &e%player% &cestán dañados y no se pueden abrir."
+          already-returned: "&cEse inventario ya fue devuelto."
+          offline: "&cEl jugador &e%player% &cdebe estar en línea para restaurar este inventario."
+          restored: "&aEl inventario de conexión de &e%player% &cse restauró correctamente."
+          erased: "&aEl registro de conexión de &e%player% &cse eliminó."
+        disconnection:
+          title: "&8Desconexión &7- &f%timestamp%"
+          missing: "&cEse registro de desconexión ya no está disponible."
+          invalid: "&cLos datos guardados de &e%player% &cestán dañados y no se pueden abrir."
+          already-returned: "&cEse inventario ya fue devuelto."
+          offline: "&cEl jugador &e%player% &cdebe estar en línea para restaurar este inventario."
+          restored: "&aEl inventario de desconexión de &e%player% &cse restauró correctamente."
+          erased: "&aEl registro de desconexión de &e%player% &cse eliminó."
+        restore:
+          name: "&aRestaurar"
+          lore:
+            - "&7Devuelve los ítems almacenados al jugador."
+        erase:
+          name: "&cBorrar"
+          lore:
+            - "&7Elimina este registro de forma permanente."

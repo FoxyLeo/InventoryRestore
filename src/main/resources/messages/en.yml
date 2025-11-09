@@ -1,0 +1,126 @@
+prefix: "&7[&bInventoryReset&7]"
+messages:
+  command:
+    no-permission: "&cYou do not have permission to use this command."
+    usage: "&7Use &b/invrestore help &7for more information."
+    unknown-subcommand: "&cUnknown subcommand. Use &b/invrestore help&c."
+    help:
+      - "&bInventoryRestore Commands:"
+      - "&7/invrestore restore <player> &f- Open the restore menu for a player."
+      - "&7/invrestore view <player> &f- View a player's inventory in real time."
+      - "&7/invrestore reload &f- Reload the plugin configuration files."
+    reload:
+      success: "&aAll configuration files have been reloaded."
+    restore:
+      usage: "&7Usage: &b/invrestore restore <player>"
+      only-players: "&cOnly players can use the menu version of this command."
+      no-record-any: "&cNo stored inventories were found for &e%player%&c."
+      notify-player: "&aYour stored inventory has been restored by &e%sender%&a."
+    view:
+      usage: "&7Usage: &b/invrestore view <player>"
+      only-players: "&cOnly players can view inventories."
+      not-found: "&cNo stored inventory data was found for &e%player%&c."
+      invalid: "&cThe stored data for &e%player% &cis corrupted and cannot be opened."
+  inventory:
+    view:
+      title: "&8Inventory View &7- &f%player%"
+      target-offline: "&cThe player &e%player% &chas disconnected. Closing the inventory view."
+    restore:
+      main:
+        title: "&8Inventory Restore &7- &f%player%"
+        unavailable: "&cThis category is not available yet."
+        items:
+          death:
+            name: "&bDeaths"
+            lore:
+              - "&7View stored death inventories."
+          world:
+            name: "&aChange of Worlds"
+            lore:
+              - "&7View inventories saved on world changes."
+          teleport:
+            name: "&dTeleports"
+            lore:
+              - "&7View inventories saved on player teleports."
+          connection:
+            name: "&aConnections"
+            lore:
+              - "&7View inventories saved on player join."
+          disconnection:
+            name: "&cDisconnections"
+            lore:
+              - "&7View inventories saved on player quit."
+      list:
+        death:
+          title: "&8Deaths &7- &f%player%"
+          empty: "&cNo stored death inventories were found for &e%player%&c."
+        world:
+          title: "&8World Changes &7- &f%player%"
+          empty: "&cNo stored world change inventories were found for &e%player%&c."
+        teleport:
+          title: "&8Teleports &7- &f%player%"
+          empty: "&cNo stored teleport inventories were found for &e%player%&c."
+        connection:
+          title: "&8Connections &7- &f%player%"
+          empty: "&cNo stored connection inventories were found for &e%player%&c."
+        disconnection:
+          title: "&8Disconnections &7- &f%player%"
+          empty: "&cNo stored disconnection inventories were found for &e%player%&c."
+        navigation:
+          previous:
+            name: "&aPrevious Page"
+            lore:
+              - "&7Go back to the previous page."
+          next:
+            name: "&aNext Page"
+            lore:
+              - "&7Go to the next page."
+      detail:
+        death:
+          title: "&8Death &7- &f%timestamp%"
+          missing: "&cThat record is no longer available."
+          invalid: "&cThe stored data for &e%player% &cis corrupted and cannot be opened."
+          already-returned: "&cThat inventory has already been returned."
+          offline: "&cThe player &e%player% &cmust be online to restore this inventory."
+          restored: "&aThe inventory of &e%player% &ahas been restored successfully."
+          erased: "&aThe death record for &e%player% &ahas been erased."
+        world:
+          title: "&8World Change &7- &f%timestamp%"
+          missing: "&cThat world change record is no longer available."
+          invalid: "&cThe stored data for &e%player% &cis corrupted and cannot be opened."
+          already-returned: "&cThat inventory has already been returned."
+          offline: "&cThe player &e%player% &cmust be online to restore this inventory."
+          restored: "&aThe world change inventory of &e%player% &ahas been restored successfully."
+          erased: "&aThe world change record for &e%player% &ahas been erased."
+        teleport:
+          title: "&8Teleport &7- &f%timestamp%"
+          missing: "&cThat teleport record is no longer available."
+          invalid: "&cThe stored data for &e%player% &cis corrupted and cannot be opened."
+          already-returned: "&cThat inventory has already been returned."
+          offline: "&cThe player &e%player% &cmust be online to restore this inventory."
+          restored: "&aThe teleport inventory of &e%player% &ahas been restored successfully."
+          erased: "&aThe teleport record for &e%player% &ahas been erased."
+        connection:
+          title: "&8Connection &7- &f%timestamp%"
+          missing: "&cThat connection record is no longer available."
+          invalid: "&cThe stored data for &e%player% &cis corrupted and cannot be opened."
+          already-returned: "&cThat inventory has already been returned."
+          offline: "&cThe player &e%player% &cmust be online to restore this inventory."
+          restored: "&aThe connection inventory of &e%player% &ahas been restored successfully."
+          erased: "&aThe connection record for &e%player% &ahas been erased."
+        disconnection:
+          title: "&8Disconnection &7- &f%timestamp%"
+          missing: "&cThat disconnection record is no longer available."
+          invalid: "&cThe stored data for &e%player% &cis corrupted and cannot be opened."
+          already-returned: "&cThat inventory has already been returned."
+          offline: "&cThe player &e%player% &cmust be online to restore this inventory."
+          restored: "&aThe disconnection inventory of &e%player% &ahas been restored successfully."
+          erased: "&aThe disconnection record for &e%player% &ahas been erased."
+        restore:
+          name: "&aRestore"
+          lore:
+            - "&7Return the stored items to the player."
+        erase:
+          name: "&cErase"
+          lore:
+            - "&7Delete this record permanently."

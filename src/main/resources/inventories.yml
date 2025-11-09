@@ -1,0 +1,61 @@
+death:
+  name: "&f%timestamp%"
+  lore:
+    - "&7User: &f%user%"
+    - "&7Death: &f%death%"
+    - "&7Items: &f%items%"
+    - "&7Coords: &f%coords%"
+    - "&7World: &f%world%"
+    - ""
+    - "&7Status: %status%"
+  status:
+    returned: "&aReturned"
+    without-returning: "&cWithout returning"
+connection:
+  name: "&f%timestamp%"
+  lore:
+    - "&7User: &f%user%"
+    - "&7Items: &f%items%"
+    - "&7Coords: &f%coords%"
+    - "&7World: &f%world%"
+    - ""
+    - "&7Status: %status%"
+  status:
+    returned: "&aReturned"
+    without-returning: "&cWithout returning"
+disconnection:
+  name: "&f%timestamp%"
+  lore:
+    - "&7User: &f%user%"
+    - "&7Items: &f%items%"
+    - "&7Coords: &f%coords%"
+    - "&7World: &f%world%"
+    - ""
+    - "&7Status: %status%"
+  status:
+    returned: "&aReturned"
+    without-returning: "&cWithout returning"
+world:
+  name: "&f%timestamp%"
+  lore:
+    - "&7User: &f%user%"
+    - "&7Items: &f%items%"
+    - "&7Origin World: &f%origin%"
+    - "&7Destination World: &f%destination%"
+    - ""
+    - "&7Status: %status%"
+  status:
+    returned: "&aReturned"
+    without-returning: "&cWithout returning"
+teleport:
+  name: "&f%timestamp%"
+  lore:
+    - "&7User: &f%user%"
+    - "&7Items: &f%items%"
+    - "&7Origin Coordinates: &f%origin%"
+    - "&7Destination Coordinates: &f%destination%"
+    - ""
+    - "&7Status: %status%"
+  status:
+    returned: "&aReturned"
+    without-returning: "&cWithout returning"
