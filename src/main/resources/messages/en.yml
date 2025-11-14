@@ -124,3 +124,16 @@ messages:
           name: "&cErase"
           lore:
             - "&7Delete this record permanently."
+      actions:
+        title: "&8Select Restore Method &7- &f%player%"
+        direct:
+          name: "&aDirect Restore"
+          lore:
+            - "&7Return the stored items directly to the player."
+            - "&cWarning: Items may overflow if the inventory is full."
+        shulker:
+          name: "&dShulker Restore"
+          lore:
+            - "&7Deliver the stored items inside a shulker box."
+            - "&7Keeps everything contained for safer delivery."
+        shulker-overflow: "&cThere are too many item stacks to fit inside a shulker box. Use the direct restore option."

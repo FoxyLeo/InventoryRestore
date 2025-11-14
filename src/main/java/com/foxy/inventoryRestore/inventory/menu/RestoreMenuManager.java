@@ -49,6 +49,7 @@ public final class RestoreMenuManager implements Listener {
     private final int mainMenuSize;
     private final int listMenuSize;
     private final int detailMenuSize;
+    private final int restoreActionMenuSize;
     private final MenuConfiguration.MenuItem mainDeathItem;
     private final MenuConfiguration.MenuItem mainWorldItem;
     private final MenuConfiguration.MenuItem mainTeleportItem;
@@ -56,6 +57,8 @@ public final class RestoreMenuManager implements Listener {
     private final MenuConfiguration.MenuItem mainDisconnectionItem;
     private final MenuConfiguration.MenuItem restoreActionItem;
     private final MenuConfiguration.MenuItem eraseActionItem;
+    private final MenuConfiguration.MenuItem directRestoreItem;
+    private final MenuConfiguration.MenuItem shulkerRestoreItem;
     private final MenuConfiguration.MenuItem previousPageItem;
     private final MenuConfiguration.MenuItem nextPageItem;
     private final int offhandSlot;
@@ -87,6 +90,7 @@ public final class RestoreMenuManager implements Listener {
         this.mainMenuSize = menuConfiguration.getMainMenuSize();
         this.listMenuSize = menuConfiguration.getDeathListSize();
         this.detailMenuSize = menuConfiguration.getDeathDetailSize();
+        this.restoreActionMenuSize = menuConfiguration.getRestoreActionMenuSize();
 
         this.mainDeathItem = menuConfiguration.getMainMenuItem("death", 1, Material.SKELETON_SKULL);
         this.mainWorldItem = menuConfiguration.getMainMenuItem("world", 3, Material.GRASS_BLOCK);
@@ -96,6 +100,8 @@ public final class RestoreMenuManager implements Listener {
 
         this.restoreActionItem = menuConfiguration.getDeathDetailAction("restore", 45, Material.LIME_WOOL);
         this.eraseActionItem = menuConfiguration.getDeathDetailAction("erase", 53, Material.PINK_WOOL);
+        this.directRestoreItem = menuConfiguration.getRestoreActionMenuItem("direct-restore", 3, Material.CHEST);
+        this.shulkerRestoreItem = menuConfiguration.getRestoreActionMenuItem("shulker-restore", 5, Material.SHULKER_BOX);
         this.previousPageItem = menuConfiguration.getDeathListNavigationItem("previous", 45, Material.ARROW);
         this.nextPageItem = menuConfiguration.getDeathListNavigationItem("next", 53, Material.ARROW);
 
@@ -264,6 +270,8 @@ public final class RestoreMenuManager implements Listener {
             handleRecordListClick(player, listHolder, slot, event.getCurrentItem());
         } else if (holder instanceof RecordDetailHolder detailHolder) {
             handleRecordDetailClick(player, detailHolder, slot);
+        } else if (holder instanceof RestoreActionHolder actionHolder) {
+            handleRestoreActionClick(player, actionHolder, slot);
         }
     }
 
@@ -329,53 +337,169 @@ public final class RestoreMenuManager implements Listener {
 
     private void handleRecordDetailClick(Player player, RecordDetailHolder holder, int slot) {
         if (slot == restoreActionItem.slot()) {
-            restoreInventory(player, holder);
+            openRestoreActionMenu(player, holder);
         } else if (slot == eraseActionItem.slot()) {
             eraseInventory(player, holder);
         }
     }
 
-    private void restoreInventory(Player staff, RecordDetailHolder holder) {
-        Optional<? extends StoredInventoryRecord> optionalRecord = findRecordById(holder.getType(), holder.getRecordId());
+    private void handleRestoreActionClick(Player player, RestoreActionHolder holder, int slot) {
+        if (slot == directRestoreItem.slot()) {
+            executeDirectRestore(player, holder);
+        } else if (slot == shulkerRestoreItem.slot()) {
+            executeShulkerRestore(player, holder);
+        }
+    }
+
+    private void openRestoreActionMenu(Player staff, RecordDetailHolder holder) {
+        Optional<StoredInventoryRecord> optionalRecord = requireAvailableRecord(
+                staff,
+                holder.getType(),
+                holder.getRecordId(),
+                holder.getTargetName(),
+                holder.getPage()
+        );
         if (optionalRecord.isEmpty()) {
-            messageService.send(staff, holder.getType().detailMessageKey("missing"), Map.of("player", holder.getTargetName()), true);
-            openRecordListMenu(staff, holder.getTargetName(), holder.getType(), holder.getPage());
             return;
         }
 
         StoredInventoryRecord record = optionalRecord.get();
-        if (record.type().usesReturnedFlag() && record.returned()) {
-            messageService.send(staff, holder.getType().detailMessageKey("already-returned"), Map.of("player", record.nickname()), true);
+        Map<String, String> placeholders = Map.of("player", record.nickname());
+        String title = messageService.formatMessage("inventory.restore.actions.title", placeholders, false);
+
+        RestoreActionHolder actionHolder = new RestoreActionHolder(
+                restoreActionMenuSize,
+                title,
+                holder.getType(),
+                record.id(),
+                record.nickname(),
+                holder.getPage()
+        );
+
+        Inventory inventory = actionHolder.getInventory();
+        inventory.setItem(directRestoreItem.slot(), buildMenuItem(
+                directRestoreItem.material(),
+                messageService.formatMessage("inventory.restore.actions.direct.name", Map.of(), false),
+                messageService.formatList("inventory.restore.actions.direct.lore", Map.of(), false)
+        ));
+        inventory.setItem(shulkerRestoreItem.slot(), buildMenuItem(
+                shulkerRestoreItem.material(),
+                messageService.formatMessage("inventory.restore.actions.shulker.name", Map.of(), false),
+                messageService.formatList("inventory.restore.actions.shulker.lore", Map.of(), false)
+        ));
+
+        staff.openInventory(inventory);
+    }
+
+    private void executeDirectRestore(Player staff, RestoreActionHolder holder) {
+        Optional<RestorationContext> optionalContext = prepareRestoration(
+                staff,
+                holder.getType(),
+                holder.getRecordId(),
+                holder.getTargetName(),
+                holder.getPage()
+        );
+        if (optionalContext.isEmpty()) {
             return;
         }
 
+        RestorationContext context = optionalContext.get();
+        List<ItemStack> leftovers = InventorySerializer.restoreInventory(context.target(), context.serialized());
+        if (!leftovers.isEmpty()) {
+            leftovers.forEach(item -> context.target().getWorld().dropItemNaturally(context.target().getLocation(), item));
+        }
+
+        finalizeRestoration(staff, holder.getType(), context, holder.getPage());
+    }
+
+    private void executeShulkerRestore(Player staff, RestoreActionHolder holder) {
+        Optional<RestorationContext> optionalContext = prepareRestoration(
+                staff,
+                holder.getType(),
+                holder.getRecordId(),
+                holder.getTargetName(),
+                holder.getPage()
+        );
+        if (optionalContext.isEmpty()) {
+            return;
+        }
+
+        RestorationContext context = optionalContext.get();
+        List<ItemStack> items = InventorySerializer.collectItems(context.serialized());
+        ItemStack shulker;
+        try {
+            shulker = InventorySerializer.createShulkerWithContents(items);
+        } catch (IllegalStateException exception) {
+            messageService.send(staff, "inventory.restore.actions.shulker-overflow", Map.of("player", context.record().nickname()), true);
+            return;
+        }
+
+        Map<Integer, ItemStack> leftovers = context.target().getInventory().addItem(shulker);
+        if (!leftovers.isEmpty()) {
+            leftovers.values().forEach(item -> context.target().getWorld().dropItemNaturally(context.target().getLocation(), item));
+        }
+
+        finalizeRestoration(staff, holder.getType(), context, holder.getPage());
+    }
+
+    private void finalizeRestoration(Player staff, InventoryRecordType type, RestorationContext context, int page) {
+        markRecordReturned(context.record());
+
+        Map<String, String> placeholders = new HashMap<>();
+        placeholders.put("player", context.record().nickname());
+        placeholders.put("sender", staff.getName());
+
+        messageService.send(staff, type.detailMessageKey("restored"), placeholders, true);
+        messageService.send(context.target(), "command.restore.notify-player", placeholders);
+
+        Bukkit.getScheduler().runTask(plugin, () -> openRecordListMenu(staff, context.record().nickname(), type, page));
+    }
+
+    private Optional<RestorationContext> prepareRestoration(Player staff,
+                                                            InventoryRecordType type,
+                                                            long recordId,
+                                                            String targetName,
+                                                            int page) {
+        Optional<StoredInventoryRecord> optionalRecord = requireAvailableRecord(staff, type, recordId, targetName, page);
+        if (optionalRecord.isEmpty()) {
+            return Optional.empty();
+        }
+
+        StoredInventoryRecord record = optionalRecord.get();
         Optional<SerializedInventory> serialized = deserializeInventory(record.inventory());
         if (serialized.isEmpty()) {
-            messageService.send(staff, holder.getType().detailMessageKey("invalid"), Map.of("player", record.nickname()), true);
-            return;
+            messageService.send(staff, type.detailMessageKey("invalid"), Map.of("player", record.nickname()), true);
+            return Optional.empty();
         }
 
         Player target = findTarget(record);
         if (target == null) {
-            messageService.send(staff, holder.getType().detailMessageKey("offline"), Map.of("player", record.nickname()), true);
-            return;
+            messageService.send(staff, type.detailMessageKey("offline"), Map.of("player", record.nickname()), true);
+            return Optional.empty();
         }
 
-        List<ItemStack> leftovers = InventorySerializer.restoreInventory(target, serialized.get());
-        if (!leftovers.isEmpty()) {
-            leftovers.forEach(item -> target.getWorld().dropItemNaturally(target.getLocation(), item));
+        return Optional.of(new RestorationContext(record, serialized.get(), target));
+    }
+
+    private Optional<StoredInventoryRecord> requireAvailableRecord(Player staff,
+                                                                   InventoryRecordType type,
+                                                                   long recordId,
+                                                                   String targetName,
+                                                                   int page) {
+        Optional<? extends StoredInventoryRecord> optionalRecord = findRecordById(type, recordId);
+        if (optionalRecord.isEmpty()) {
+            messageService.send(staff, type.detailMessageKey("missing"), Map.of("player", targetName), true);
+            openRecordListMenu(staff, targetName, type, Math.max(0, page));
+            return Optional.empty();
         }
 
-        markRecordReturned(record);
+        StoredInventoryRecord record = optionalRecord.get();
+        if (record.type().usesReturnedFlag() && record.returned()) {
+            messageService.send(staff, type.detailMessageKey("already-returned"), Map.of("player", record.nickname()), true);
+            return Optional.empty();
+        }
 
-        Map<String, String> placeholders = new HashMap<>();
-        placeholders.put("player", record.nickname());
-        placeholders.put("sender", staff.getName());
-
-        messageService.send(staff, holder.getType().detailMessageKey("restored"), placeholders, true);
-        messageService.send(target, "command.restore.notify-player", placeholders);
-
-        Bukkit.getScheduler().runTask(plugin, () -> openRecordListMenu(staff, record.nickname(), holder.getType(), holder.getPage()));
+        return Optional.of(record);
     }
 
     private void eraseInventory(Player staff, RecordDetailHolder holder) {
@@ -579,5 +703,8 @@ public final class RestoreMenuManager implements Listener {
         }
 
         inventory.setItem(offhandSlot, offhand.clone());
+    }
+
+    private record RestorationContext(StoredInventoryRecord record, SerializedInventory serialized, Player target) {
     }
 }

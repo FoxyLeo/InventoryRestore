@@ -1,8 +1,12 @@
 package com.foxy.inventoryRestore.inventory;
 
+import org.bukkit.Material;
+import org.bukkit.block.ShulkerBox;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.inventory.meta.BlockStateMeta;
 import org.bukkit.util.io.BukkitObjectInputStream;
 import org.bukkit.util.io.BukkitObjectOutputStream;
 
@@ -89,6 +93,36 @@ public final class InventorySerializer {
         addItems(items, inventory.armor());
         addItems(items, inventory.extra());
         return items;
+    }
+
+    public static ItemStack createShulkerWithContents(List<ItemStack> items) {
+        ItemStack shulker = new ItemStack(Material.SHULKER_BOX);
+        if (!(shulker.getItemMeta() instanceof BlockStateMeta meta)) {
+            return shulker;
+        }
+
+        if (!(meta.getBlockState() instanceof ShulkerBox shulkerBox)) {
+            return shulker;
+        }
+
+        Inventory inventory = shulkerBox.getInventory();
+        inventory.clear();
+
+        for (ItemStack item : items) {
+            if (item == null || item.getType().isAir()) {
+                continue;
+            }
+
+            Map<Integer, ItemStack> overflow = inventory.addItem(item.clone());
+            if (!overflow.isEmpty()) {
+                throw new IllegalStateException("Not enough space to store all items inside a single shulker box.");
+            }
+        }
+
+        shulkerBox.update();
+        meta.setBlockState(shulkerBox);
+        shulker.setItemMeta(meta);
+        return shulker;
     }
 
     public static List<ItemStack> restoreInventory(Player player, SerializedInventory serialized) {

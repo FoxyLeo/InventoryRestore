@@ -16,6 +16,7 @@ public final class MenuConfiguration {
     private static final int DEFAULT_MAIN_MENU_SIZE = 18;
     private static final int DEFAULT_DEATH_MENU_SIZE = 54;
     private static final String MENU_FILE = "invconfig.yml";
+    private static final int DEFAULT_RESTORE_ACTION_MENU_SIZE = 9;
 
     private final InventoryRestore plugin;
     private FileConfiguration configuration;
@@ -98,6 +99,19 @@ public final class MenuConfiguration {
     public MenuItem getDeathDetailAction(String key, int defaultSlot, Material defaultMaterial) {
         ensureConfiguration();
         String path = "menus.death-detail.actions." + key;
+        int slot = configuration.getInt(path + ".slot", defaultSlot);
+        Material material = getMaterial(path + ".material", defaultMaterial);
+        return new MenuItem(slot, material);
+    }
+
+    public int getRestoreActionMenuSize() {
+        ensureConfiguration();
+        return configuration.getInt("menus.restore-actions.size", DEFAULT_RESTORE_ACTION_MENU_SIZE);
+    }
+
+    public MenuItem getRestoreActionMenuItem(String key, int defaultSlot, Material defaultMaterial) {
+        ensureConfiguration();
+        String path = "menus.restore-actions.items." + key;
         int slot = configuration.getInt(path + ".slot", defaultSlot);
         Material material = getMaterial(path + ".material", defaultMaterial);
         return new MenuItem(slot, material);

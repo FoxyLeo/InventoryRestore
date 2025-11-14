@@ -124,3 +124,16 @@ messages:
           name: "&cBorrar"
           lore:
             - "&7Elimina este registro de forma permanente."
+      actions:
+        title: "&8Selecciona Método de Restauración &7- &f%player%"
+        direct:
+          name: "&aRestauración Directa"
+          lore:
+            - "&7Devuelve los ítems directamente al jugador."
+            - "&cAdvertencia: Puede haber desborde si el inventario está lleno."
+        shulker:
+          name: "&dRestauración en Shulker"
+          lore:
+            - "&7Entrega los ítems almacenados dentro de una shulker."
+            - "&7Mantiene todo encapsulado para mayor seguridad."
+        shulker-overflow: "&cHay demasiados stacks para caber en una shulker. Usa la restauración directa."

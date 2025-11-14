@@ -127,3 +127,12 @@ menus:
       - 33
       - 34
       - 35
+  restore-actions:
+    size: 9
+    items:
+      direct-restore:
+        slot: 3
+        material: CHEST
+      shulker-restore:
+        slot: 5
+        material: SHULKER_BOX
